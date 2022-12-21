@@ -1,5 +1,4 @@
-# dear-api
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/eighteen73/dear-api/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/UmiMood/dear-api/?branch=master)
+# PHP Dear API Wrapper
 PHP Library for [DEAR Systems](https://dearinventory.docs.apiary.io) API v2.
 
 Originally forked from [UmiMood/dear-api](https://github.com/UmiMood/dear-api).
