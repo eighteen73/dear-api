@@ -11,18 +11,16 @@
  *
  */
 
-namespace UmiMood\Dear\Api;
+namespace Eighteen73\Dear\Api;
 
 class InventoryWriteOffList extends BaseApi
 {
-    protected
-    function getGUID()
+    protected function getGUID(): string
     {
         return "ID";
     }
 
-    protected
-    function getAction()
+    protected function getAction(): string
     {
         return 'inventoryWriteOffList';
     }

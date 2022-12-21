@@ -11,17 +11,13 @@
  *
  */
 
-namespace UmiMood\Dear;
+namespace Eighteen73\Dear;
 
-use UmiMood\Dear\Api\BaseApi;
+use Eighteen73\Dear\Api\BaseApi;
 
 class Helper
 {
-    /**
-     * @param $parameters
-     * @return mixed
-     */
-    public static function prepareParameters($parameters)
+    public static function prepareParameters(array $parameters): array
     {
         // set limit & page
         if (!isset($parameters['page'])) {

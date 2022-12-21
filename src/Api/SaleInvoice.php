@@ -11,19 +11,19 @@
  *
  */
 
-namespace UmiMood\Dear\Api;
+namespace Eighteen73\Dear\Api;
 
-use UmiMood\Dear\Api\Contracts\DeleteMethodAllowed as DeleteContract;
-use UmiMood\Dear\Api\Contracts\PostMethodAllowed as PostContract;
+use Eighteen73\Dear\Api\Contracts\DeleteMethodAllowed as DeleteContract;
+use Eighteen73\Dear\Api\Contracts\PostMethodAllowed as PostContract;
 
 class SaleInvoice extends BaseApi implements PostContract, DeleteContract
 {
-    protected function getGUID()
+    protected function getGUID(): string
     {
         return "SaleID";
     }
 
-    protected function getAction()
+    protected function getAction(): string
     {
         return 'sale/invoice';
     }

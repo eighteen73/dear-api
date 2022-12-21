@@ -11,16 +11,16 @@
  *
  */
 
-namespace UmiMood\Dear\Api;
+namespace Eighteen73\Dear\Api;
 
 class FinishedGoodsList extends BaseApi
 {
-    protected function getGUID()
+    protected function getGUID(): string
     {
         return "TaskID";
     }
 
-    protected function getAction()
+    protected function getAction(): string
     {
         return 'finishedGoodsList';
     }

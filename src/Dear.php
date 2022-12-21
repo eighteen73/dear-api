@@ -11,48 +11,27 @@
  *
  */
 
-namespace UmiMood\Dear;
+namespace Eighteen73\Dear;
 
 class Dear
 {
-    /**
-     * @var Dear
-     */
-    protected static $instance;
+    protected static self $instance;
 
-    /**
-     * @var Config
-     */
-    protected $config;
+    protected Config $config;
 
-    /**
-     * Dear constructor.
-     * @param string $accountId
-     * @param string $applicationKey
-     */
-    protected function __construct($accountId = null, $applicationKey = null)
+    protected function __construct(string $accountId = null, string $applicationKey = null)
     {
         $this->config = new Config($accountId, $applicationKey);
     }
 
-    /**
-     * @param string $accountId
-     * @param string $applicationKey
-     * @return Dear
-     */
-    public static function create($accountId = null, $applicationKey = null)
+    public static function create(string $accountId = null, string $applicationKey = null): self
     {
-        return (static::$instance) ? static::$instance : new static($accountId, $applicationKey);
+        return (static::$instance) ?: new static($accountId, $applicationKey);
     }
 
-    /**
-     * @param $name
-     * @param $arguments
-     * @return mixed
-     */
-    public function __call($name, $arguments)
+    public function __call(string $name, mixed $arguments): mixed
     {
-        $class = "\\UmiMood\\Dear\\Api\\" . ucwords($name);
+        $class = "\\Eighteen73\\Dear\\Api\\" . ucwords($name);
         if (class_exists($class)) {
             return new $class($this->config);
         }

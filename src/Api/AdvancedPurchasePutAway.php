@@ -11,18 +11,18 @@
  *
  */
 
-namespace UmiMood\Dear\Api;
+namespace Eighteen73\Dear\Api;
 
-use UmiMood\Dear\Api\Contracts\PostMethodAllowed as PostContract;
+use Eighteen73\Dear\Api\Contracts\PostMethodAllowed as PostContract;
 
 class AdvancedPurchasePutAway extends BaseApi implements PostContract
 {
-    protected function getGUID()
+    protected function getGUID(): string
     {
         return "PurchaseID";
     }
 
-    protected function getAction()
+    protected function getAction(): string
     {
         return 'advanced-purchase/put-away';
     }

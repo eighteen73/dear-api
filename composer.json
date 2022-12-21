@@ -7,22 +7,26 @@
         {
             "name": "Umair Mahmood",
             "email": "umair.mahmood22@gmail.com"
+        },
+        {
+            "name": "Matt Jones",
+            "email": "matt@eighteen73.co.uk"
         }
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": "^7.1",
-        "guzzlehttp/guzzle": "^6.3",
+        "php": "^8.0",
+        "guzzlehttp/guzzle": "^7.4",
         "ext-json": "*"
     },
     "autoload": {
         "psr-4": {
-            "UmiMood\\Dear\\" : "src/"
+            "Eighteen73\\Dear\\" : "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "UmiMood\\Dear\\Test\\" : "tests/"
+            "Eighteen73\\Dear\\Test\\" : "tests/"
         }
     },
     "extra": {
@@ -32,6 +36,6 @@
     },
     "prefer-stable": true,
     "require-dev": {
-        "phpunit/phpunit": "^7.5"
+        "phpunit/phpunit": "^9.5"
     }
 }

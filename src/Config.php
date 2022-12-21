@@ -11,59 +11,42 @@
  *
  */
 
-namespace UmiMood\Dear;
+namespace Eighteen73\Dear;
 
 class Config
 {
     /**
      * @var string
      */
-    protected $accountId;
+    protected string $accountId;
 
     /**
      * @var string
      */
-    protected $applicationKey;
+    protected string $applicationKey;
 
-    /**
-     * Config constructor.
-     * @param string $accountId
-     * @param string $applicationKey
-     */
-    public function __construct($accountId = null, $applicationKey = null)
+    public function __construct(string $accountId = null, string $applicationKey = null)
     {
         $this->setAccountId($accountId ?: getenv('DEAR_ACCOUNT_ID'));
         $this->setApplicationKey($applicationKey ?: getenv('DEAR_APPLICATION_KEY'));
     }
 
-    /**
-     * @return string
-     */
-    public function getAccountId()
+    public function getAccountId(): string
     {
         return $this->accountId;
     }
 
-    /**
-     * @param string $accountId
-     */
-    public function setAccountId($accountId)
+    public function setAccountId(string $accountId): void
     {
         $this->accountId = $accountId;
     }
 
-    /**
-     * @return string
-     */
-    public function getApplicationKey()
+    public function getApplicationKey(): string
     {
         return $this->applicationKey;
     }
 
-    /**
-     * @param string $applicationKey
-     */
-    public function setApplicationKey($applicationKey)
+    public function setApplicationKey($applicationKey): string
     {
         $this->applicationKey = $applicationKey;
     }

@@ -11,16 +11,16 @@
  *
  */
 
-namespace UmiMood\Dear\Api;
+namespace Eighteen73\Dear\Api;
 
 class SaleList extends BaseApi
 {
-    protected function getGUID()
+    protected function getGUID(): string
     {
         return "SaleID";
     }
 
-    protected function getAction()
+    protected function getAction(): string
     {
         return 'saleList';
     }

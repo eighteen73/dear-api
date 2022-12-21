@@ -11,7 +11,7 @@
  *
  */
 
-namespace UmiMood\Dear\Exception;
+namespace Eighteen73\Dear\Exception;
 
 class ForbiddenRequestException extends DearApiException
 {

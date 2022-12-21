@@ -11,18 +11,38 @@
  *
  */
 
-namespace UmiMood\Dear\Test;
+namespace Eighteen73\Dear\Test;
 
+use Eighteen73\Dear\Api\Account;
+use Eighteen73\Dear\Api\AttributeSet;
+use Eighteen73\Dear\Api\BankAccount;
+use Eighteen73\Dear\Api\Brand;
+use Eighteen73\Dear\Api\Carrier;
+use Eighteen73\Dear\Api\Contracts\DeleteMethodAllowed;
+use Eighteen73\Dear\Api\Contracts\PostMethodAllowed;
+use Eighteen73\Dear\Api\Contracts\PutMethodAllowed;
+use Eighteen73\Dear\Api\Customer;
+use Eighteen73\Dear\Api\FixedAssetType;
+use Eighteen73\Dear\Api\Journal;
+use Eighteen73\Dear\Api\Location;
+use Eighteen73\Dear\Api\MeAddress;
+use Eighteen73\Dear\Api\MeContact;
+use Eighteen73\Dear\Api\PaymentTerm;
+use Eighteen73\Dear\Api\ProductAvailability;
+use Eighteen73\Dear\Api\ProductCategory;
+use Eighteen73\Dear\Api\Supplier;
+use Eighteen73\Dear\Api\Tax;
+use Eighteen73\Dear\Api\UnitOfMeasure;
 use PHPUnit\Framework\TestCase;
-use UmiMood\Dear\Dear;
+use Eighteen73\Dear\Dear;
 use ReflectionClass;
 
 class DearTest extends TestCase
 {
-    protected $application;
+    protected Dear $application;
 
-    protected static $methods = [
-        'account',
+    protected static array $methods = [
+        'Account',
         'AttributeSet',
         'BankAccount',
         'Brand',
@@ -45,91 +65,52 @@ class DearTest extends TestCase
         'UnitOfMeasure',
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->application = Dear::create(null, null);
     }
 
-    protected function getRandomCode()
+    protected function getRandomCode(): string
     {
         return substr(md5(microtime()),rand(0,26),6);
     }
 
-    protected function getId($response, $method)
+    protected function getId(array $response, string $method): string
     {
         $class = substr($method, 4);
-        switch ($class) {
 
-            case "Account":
-                return $response["AccountsList"][0]["Code"];
-                break;
-            case "AttributeSet":
-                return $response['LocationList']['ID'];
-                break;
-
-            case "Brand":
-                return $response["ID"];
-                break;
-            case "Carrier":
-                return $response['CarrierList'][0]['CarrierID'];
-                break;
-            case "Customer":
-                return $response['CustomerList'][0]['ID'];
-                break;
-            case "FixedAssetType":
-                return $response['FixedAssetTypeList'][0]['FixedAssetTypeID'];
-                break;
-
-            case "Location":
-                return $response["ID"];
-                break;
-
-            case "MeAddress":
-                return $response["MeAddressesList"][0]["AddressID"];
-                break;
-
-            case "MeContact":
-                return $response["MeContactsList"][0]["ContactID"];
-                break;
-
-            case "PaymentTerm":
-                return $response['PaymentTermList'][0]['ID'];
-                break;
-
-            case "ProductCategory":
-                return $response["ID"];
-                break;
-
-            case "Supplier":
-                return $response['SupplierList'][0]['ID'];
-                break;
-
-            case "Tax":
-                return $response['TaxRuleList'][0]['ID'];
-                break;
-            case "UnitOfMeasure":
-                return $response["ID"];
-                break;
-
-            case "Webhooks":
-                return $response["ID"];
-                break;
-        }
+        return match($class) {
+            "Account" => $response["AccountsList"][0]["Code"],
+            "AttributeSet" => $response['LocationList']['ID'],
+            "Brand",
+            "Location",
+            "ProductCategory",
+            "UnitOfMeasure",
+            "Webhooks" => $response["ID"],
+            "Carrier" => $response['CarrierList'][0]['CarrierID'],
+            "Customer" => $response['CustomerList'][0]['ID'],
+            "FixedAssetType" => $response['FixedAssetTypeList'][0]['FixedAssetTypeID'],
+            "MeAddress" => $response['MeAddressesList'][0]['AddressID'],
+            "MeContact" => $response['MeContactsList'][0]['ContactID'],
+            "PaymentTerm" => $response['PaymentTermList'][0]['ID'],
+            "Supplier" => $response['SupplierList'][0]['ID'],
+            "Tax" => $response['TaxRuleList'][0]['ID'],
+        };
     }
 
-    public function testInitialize()
+    public function testInitialize(): void
     {
         $this->assertInstanceOf(Dear::class, $this->application);
     }
 
-    public function testAccount()
+    public function testAccount(): void
     {
-        $reflection = new ReflectionClass("\UmiMood\Dear\Api\Account");
+        $reflection = new ReflectionClass(Account::class);
         $response = $this->application->Account()->get([]);
 
         $this->assertNotEmpty($response, "Test: Account");
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PostMethodAllowed")) {
+        if ($reflection->implementsInterface(PostMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Code" => $randomCode,
@@ -147,7 +128,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: Account");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PutMethodAllowed")) {
+        if ($reflection->implementsInterface(PutMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Code" => $randomCode,
@@ -174,7 +155,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: Account");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\DeleteMethodAllowed")) {
+        if ($reflection->implementsInterface(DeleteMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Code" => $randomCode,
@@ -196,7 +177,7 @@ class DearTest extends TestCase
         }
     }
 
-    public function testGetEndpoints()
+    public function testGetEndpoints(): void
     {
         foreach (self::$methods as $method) {
             $response = $this->application->{$method}()->get([]);
@@ -205,14 +186,14 @@ class DearTest extends TestCase
         }
     }
 
-    public function testAttributeSet()
+    public function testAttributeSet(): void
     {
-        $reflection = new ReflectionClass("\UmiMood\Dear\Api\AttributeSet");
+        $reflection = new ReflectionClass(AttributeSet::class);
         $response = $this->application->AttributeSet()->get([]);
 
         $this->assertNotEmpty($response, "Test: AttributeSet");
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PostMethodAllowed")) {
+        if ($reflection->implementsInterface(PostMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Attribute set $randomCode",
@@ -226,7 +207,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: AttributeSet");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PutMethodAllowed")) {
+        if ($reflection->implementsInterface(PutMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Attribute set $randomCode",
@@ -243,7 +224,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: AttributeSet");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\DeleteMethodAllowed")) {
+        if ($reflection->implementsInterface(DeleteMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Attribute set $randomCode",
@@ -261,14 +242,14 @@ class DearTest extends TestCase
         }
     }
 
-    public function testBankAccount()
+    public function testBankAccount(): void
     {
-        $reflection = new ReflectionClass("\UmiMood\Dear\Api\BankAccount");
+        $reflection = new ReflectionClass(BankAccount::class);
         $response = $this->application->BankAccount()->get([]);
 
         $this->assertNotEmpty($response, "Test: BankAccount");
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PostMethodAllowed")) {
+        if ($reflection->implementsInterface(PostMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
 
@@ -279,7 +260,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: BankAccount");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PutMethodAllowed")) {
+        if ($reflection->implementsInterface(PutMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
 
@@ -293,7 +274,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: BankAccount");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PutMethodAllowed")) {
+        if ($reflection->implementsInterface(PutMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
 
@@ -308,14 +289,14 @@ class DearTest extends TestCase
         }
     }
 
-    public function testBrand()
+    public function testBrand(): void
     {
-        $reflection = new ReflectionClass("\UmiMood\Dear\Api\Brand");
+        $reflection = new ReflectionClass(Brand::class);
         $response = $this->application->Brand()->get([]);
 
         $this->assertNotEmpty($response, "Test: Brand");
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PostMethodAllowed")) {
+        if ($reflection->implementsInterface(PostMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Brand $randomCode",
@@ -326,7 +307,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: Brand");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PutMethodAllowed")) {
+        if ($reflection->implementsInterface(PutMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Brand $randomCode",
@@ -340,7 +321,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: Brand");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\DeleteMethodAllowed")) {
+        if ($reflection->implementsInterface(DeleteMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Brand $randomCode",
@@ -355,14 +336,14 @@ class DearTest extends TestCase
         }
     }
 
-    public function testCarrier()
+    public function testCarrier(): void
     {
-        $reflection = new ReflectionClass("\UmiMood\Dear\Api\Carrier");
+        $reflection = new ReflectionClass(Carrier::class);
         $response = $this->application->Carrier()->get([]);
 
         $this->assertNotEmpty($response, "Test: Carrier");
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PostMethodAllowed")) {
+        if ($reflection->implementsInterface(PostMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Description" => "Carrier $randomCode",
@@ -373,7 +354,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: Carrier");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PutMethodAllowed")) {
+        if ($reflection->implementsInterface(PutMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Description" => "Carrier $randomCode",
@@ -387,7 +368,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: Carrier");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\DeleteMethodAllowed")) {
+        if ($reflection->implementsInterface(DeleteMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Description" => "Carrier $randomCode",
@@ -402,14 +383,14 @@ class DearTest extends TestCase
         }
     }
 
-    public function testCustomer()
+    public function testCustomer(): void
     {
-        $reflection = new ReflectionClass("\UmiMood\Dear\Api\Customer");
+        $reflection = new ReflectionClass(Customer::class);
         $response = $this->application->Customer()->get([]);
 
         $this->assertNotEmpty($response, "Test: Customer");
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PostMethodAllowed")) {
+        if ($reflection->implementsInterface(PostMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Status" => "ACTIVE",
@@ -428,7 +409,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: Customer");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PutMethodAllowed")) {
+        if ($reflection->implementsInterface(PutMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Status" => "ACTIVE",
@@ -450,7 +431,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: Customer");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\DeleteMethodAllowed")) {
+        if ($reflection->implementsInterface(DeleteMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Status" => "ACTIVE",
@@ -473,30 +454,30 @@ class DearTest extends TestCase
         }
     }
 
-    public function testFixedAssetType()
+    public function testFixedAssetType(): void
     {
-        $reflection = new ReflectionClass("\UmiMood\Dear\Api\FixedAssetType");
+        $reflection = new ReflectionClass(FixedAssetType::class);
         $response = $this->application->FixedAssetType()->get([]);
 
         $this->assertNotEmpty($response, "Test: FixedAssetType");
     }
 
-    public function testJournal()
+    public function testJournal(): void
     {
-        $reflection = new ReflectionClass("\UmiMood\Dear\Api\Journal");
+        $reflection = new ReflectionClass(Journal::class);
         $response = $this->application->Journal()->get([]);
 
         $this->assertNotEmpty($response, "Test: Journal");
     }
 
-    public function testLocation()
+    public function testLocation(): void
     {
-        $reflection = new ReflectionClass("\UmiMood\Dear\Api\Location");
+        $reflection = new ReflectionClass(Location::class);
         $response = $this->application->Location()->get([]);
 
         $this->assertNotEmpty($response, "Test: Location");
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PostMethodAllowed")) {
+        if ($reflection->implementsInterface(PostMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Location $randomCode"
@@ -507,7 +488,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: Location");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PutMethodAllowed")) {
+        if ($reflection->implementsInterface(PutMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Location $randomCode"
@@ -521,7 +502,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: Location");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\DeleteMethodAllowed")) {
+        if ($reflection->implementsInterface(DeleteMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Location $randomCode"
@@ -536,20 +517,20 @@ class DearTest extends TestCase
         }
     }
 
-    public function testMe()
+    public function testMe(): void
     {
         $response = $this->application->Me()->get([]);
         $this->assertNotEmpty($response, "Test: Me");
     }
 
-    public function testMeAddress()
+    public function testMeAddress(): void
     {
-        $reflection = new ReflectionClass("\UmiMood\Dear\Api\MeAddress");
+        $reflection = new ReflectionClass(MeAddress::class);
         $response = $this->application->MeAddress()->get([]);
 
         $this->assertNotEmpty($response, "Test: MeAddress");
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PostMethodAllowed")) {
+        if ($reflection->implementsInterface(PostMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Line1" => "business address $randomCode",
@@ -567,7 +548,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: MeAddress");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PutMethodAllowed")) {
+        if ($reflection->implementsInterface(PutMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Line1" => "business address $randomCode",
@@ -588,7 +569,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: MeAddress");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\DeleteMethodAllowed")) {
+        if ($reflection->implementsInterface(DeleteMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Line1" => "business address $randomCode",
@@ -610,14 +591,14 @@ class DearTest extends TestCase
         }
     }
 
-    public function testMeContact()
+    public function testMeContact(): void
     {
-        $reflection = new ReflectionClass("\UmiMood\Dear\Api\MeContact");
+        $reflection = new ReflectionClass(MeContact::class);
         $response = $this->application->MeContact()->get([]);
 
         $this->assertNotEmpty($response, "Test: MeContact");
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PostMethodAllowed")) {
+        if ($reflection->implementsInterface(PostMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Business contact $randomCode",
@@ -635,7 +616,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: MeContact");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PutMethodAllowed")) {
+        if ($reflection->implementsInterface(PutMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Business contact $randomCode",
@@ -656,7 +637,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: MeContact");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\DeleteMethodAllowed")) {
+        if ($reflection->implementsInterface(DeleteMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Business contact $randomCode",
@@ -678,14 +659,14 @@ class DearTest extends TestCase
         }
     }
 
-    public function testPaymentTerm()
+    public function testPaymentTerm(): void
     {
-        $reflection = new ReflectionClass("\UmiMood\Dear\Api\PaymentTerm");
+        $reflection = new ReflectionClass(PaymentTerm::class);
         $response = $this->application->PaymentTerm()->get([]);
 
         $this->assertNotEmpty($response, "Test: PaymentTerm");
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PostMethodAllowed")) {
+        if ($reflection->implementsInterface(PostMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Payment Term $randomCode",
@@ -697,7 +678,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: PaymentTerm");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PutMethodAllowed")) {
+        if ($reflection->implementsInterface(PutMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Payment Term $randomCode",
@@ -712,7 +693,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: PaymentTerm");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\DeleteMethodAllowed")) {
+        if ($reflection->implementsInterface(DeleteMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Payment Term $randomCode",
@@ -728,14 +709,14 @@ class DearTest extends TestCase
         }
     }
 
-    public function testUnitOfMeasure()
+    public function testUnitOfMeasure(): void
     {
-        $reflection = new ReflectionClass("\UmiMood\Dear\Api\UnitOfMeasure");
+        $reflection = new ReflectionClass(UnitOfMeasure::class);
         $response = $this->application->UnitOfMeasure()->get([]);
 
         $this->assertNotEmpty($response, "Test: UnitOfMeasure");
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PostMethodAllowed")) {
+        if ($reflection->implementsInterface(PostMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Unit of Measure $randomCode",
@@ -746,7 +727,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: UnitOfMeasure");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PutMethodAllowed")) {
+        if ($reflection->implementsInterface(PutMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Unit of Measure $randomCode",
@@ -760,7 +741,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: UnitOfMeasure");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\DeleteMethodAllowed")) {
+        if ($reflection->implementsInterface(DeleteMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Unit of Measure $randomCode",
@@ -775,14 +756,14 @@ class DearTest extends TestCase
         }
     }
 
-    public function testTax()
+    public function testTax(): void
     {
-        $reflection = new ReflectionClass("\UmiMood\Dear\Api\Tax");
+        $reflection = new ReflectionClass(Tax::class);
         $response = $this->application->Tax()->get([]);
 
         $this->assertNotEmpty($response, "Test: Tax");
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PostMethodAllowed")) {
+        if ($reflection->implementsInterface(PostMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Test Tax $randomCode",
@@ -807,7 +788,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: Tax");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PutMethodAllowed")) {
+        if ($reflection->implementsInterface(PutMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Test Tax $randomCode",
@@ -835,7 +816,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: Tax");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\DeleteMethodAllowed")) {
+        if ($reflection->implementsInterface(DeleteMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Test Tax $randomCode",
@@ -864,22 +845,22 @@ class DearTest extends TestCase
         }
     }
 
-    public function testProductAvailability()
+    public function testProductAvailability(): void
     {
-        $reflection = new ReflectionClass("\UmiMood\Dear\Api\ProductAvailability");
+        $reflection = new ReflectionClass(ProductAvailability::class);
         $response = $this->application->ProductAvailability()->get([]);
 
         $this->assertNotEmpty($response, "Test: ProductAvailability");
     }
 
-    public function testProductCategory()
+    public function testProductCategory(): void
     {
-        $reflection = new ReflectionClass("\UmiMood\Dear\Api\ProductCategory");
+        $reflection = new ReflectionClass(ProductCategory::class);
         $response = $this->application->ProductCategory()->get([]);
 
         $this->assertNotEmpty($response, "Test: ProductCategory");
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PostMethodAllowed")) {
+        if ($reflection->implementsInterface(PostMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Category $randomCode"
@@ -890,7 +871,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: ProductCategory");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PutMethodAllowed")) {
+        if ($reflection->implementsInterface(PutMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Category $randomCode"
@@ -904,7 +885,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: ProductCategory");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\DeleteMethodAllowed")) {
+        if ($reflection->implementsInterface(DeleteMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Name" => "Category $randomCode"
@@ -919,14 +900,14 @@ class DearTest extends TestCase
         }
     }
 
-    public function testSupplier()
+    public function testSupplier(): void
     {
-        $reflection = new ReflectionClass("\UmiMood\Dear\Api\Supplier");
+        $reflection = new ReflectionClass(Supplier::class);
         $response = $this->application->Supplier()->get([]);
 
         $this->assertNotEmpty($response, "Test: Supplier");
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PostMethodAllowed")) {
+        if ($reflection->implementsInterface(PostMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Status" => "Active",
@@ -944,7 +925,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: Supplier");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\PutMethodAllowed")) {
+        if ($reflection->implementsInterface(PutMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Status" => "Active",
@@ -965,7 +946,7 @@ class DearTest extends TestCase
             $this->assertNotEmpty($response, "Test: Supplier");
         }
 
-        if ($reflection->implementsInterface("\UmiMood\Dear\Api\Contracts\DeleteMethodAllowed")) {
+        if ($reflection->implementsInterface(DeleteMethodAllowed::class)) {
             $randomCode = $this->getRandomCode();
             $params = [
                 "Status" => "Active",
@@ -987,7 +968,7 @@ class DearTest extends TestCase
         }
     }
 
-    public function testAdvancedPurchase()
+    public function testAdvancedPurchase(): void
     {
         $parameters = $this->createPurchase();
         $response = $this->application->advancedPurchase()->create($parameters);
@@ -1002,7 +983,7 @@ class DearTest extends TestCase
         $this->assertArrayHasKey('ID', $response);
     }
 
-    public function testPurchase()
+    public function testPurchase(): void
     {
         $parameters = $this->createPurchase();
         $response = $this->application->purchase()->create($parameters);
@@ -1017,7 +998,7 @@ class DearTest extends TestCase
         $this->assertArrayHasKey('ID', $response);
     }
 
-    protected function createPurchase()
+    protected function createPurchase(): array
     {
         $randomCode = $this->getRandomCode();
         return [
@@ -1028,7 +1009,7 @@ class DearTest extends TestCase
         ];
     }
 
-    public function testSale()
+    public function testSale(): void
     {
         $parameters = $this->createSale();
         $response = $this->application->sale()->create($parameters);
@@ -1043,7 +1024,7 @@ class DearTest extends TestCase
         $this->assertArrayHasKey('ID', $response);
     }
 
-    protected function createSale()
+    protected function createSale(): array
     {
         $randomCode = $this->getRandomCode();
         return [
@@ -1053,7 +1034,7 @@ class DearTest extends TestCase
         ];
     }
 
-    public function testProductGet()
+    public function testProductGet(): void
     {
         $data = $this->application->productFamily()->get([]);
         $this->assertArrayHasKey('ProductFamilies', $data);
@@ -1062,7 +1043,7 @@ class DearTest extends TestCase
         $this->assertArrayHasKey('Products', $data);
     }
 
-    public function testProductPost()
+    public function testProductPost(): void
     {
         $parameters = $this->createProduct();
         $productResponse = $this->application->product()->create($parameters);
@@ -1084,7 +1065,7 @@ class DearTest extends TestCase
         $this->assertNotEmpty($response['ProductFamilies']);
     }
 
-    public function testProductPut()
+    public function testProductPut(): void
     {
         $parameters = $this->createProduct();
         $response = $this->application->product()->create($parameters);
@@ -1096,7 +1077,7 @@ class DearTest extends TestCase
         $this->assertEquals('Update Test Product', $response['Products'][0]['Name']);
     }
 
-    protected function createProduct()
+    protected function createProduct(): array
     {
         $randomCode = $this->getRandomCode();
         return [
@@ -1114,7 +1095,7 @@ class DearTest extends TestCase
         ];
     }
 
-    protected function createProductFamily()
+    protected function createProductFamily(): array
     {
         $randomCode = $this->getRandomCode();
         return [
@@ -1132,7 +1113,7 @@ class DearTest extends TestCase
         ];
     }
 
-    public function testWebhooks()
+    public function testWebhooks(): void
     {
         $response = $this->application->webhooks()->get([]);
         $this->assertNotEmpty($response);
@@ -1149,7 +1130,7 @@ class DearTest extends TestCase
         $this->assertArrayHasKey('Webhooks', $response);
     }
 
-    protected function createWebhooks()
+    protected function createWebhooks(): array
     {
         $randomCode = $this->getRandomCode();
         return [

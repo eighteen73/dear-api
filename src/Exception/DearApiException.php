@@ -11,18 +11,18 @@
  *
  */
 
-namespace UmiMood\Dear\Exception;
+namespace Eighteen73\Dear\Exception;
 
 class DearApiException extends \Exception
 {
-    protected $statusCode;
+    protected int $statusCode;
 
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->statusCode;
     }
 
-    public function setStatusCode($statusCode)
+    public function setStatusCode(int $statusCode): void
     {
         $this->statusCode = $statusCode;
     }

@@ -11,50 +11,48 @@
  *
  */
 
-namespace UmiMood\Dear\Api;
+namespace Eighteen73\Dear\Api;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\ServerException;
-use UmiMood\Dear\Api\Contracts\DeleteMethodAllowed;
-use UmiMood\Dear\Api\Contracts\PostMethodAllowed;
-use UmiMood\Dear\Api\Contracts\PutMethodAllowed;
-use UmiMood\Dear\Config;
-use UmiMood\Dear\Exception\BadRequestException;
-use UmiMood\Dear\Exception\DearApiException;
-use UmiMood\Dear\Exception\ForbiddenRequestException;
-use UmiMood\Dear\Exception\InternalServerErrorException;
-use UmiMood\Dear\Exception\MethodNotAllowedException;
-use UmiMood\Dear\Exception\NotFoundException;
-use UmiMood\Dear\Exception\ServiceUnavailableException;
-use UmiMood\Dear\Helper;
-use UmiMood\Dear\RESTApi;
+use Eighteen73\Dear\Api\Contracts\DeleteMethodAllowed;
+use Eighteen73\Dear\Api\Contracts\PostMethodAllowed;
+use Eighteen73\Dear\Api\Contracts\PutMethodAllowed;
+use Eighteen73\Dear\Config;
+use Eighteen73\Dear\Exception\BadRequestException;
+use Eighteen73\Dear\Exception\DearApiException;
+use Eighteen73\Dear\Exception\ForbiddenRequestException;
+use Eighteen73\Dear\Exception\InternalServerErrorException;
+use Eighteen73\Dear\Exception\MethodNotAllowedException;
+use Eighteen73\Dear\Exception\NotFoundException;
+use Eighteen73\Dear\Exception\ServiceUnavailableException;
+use Eighteen73\Dear\Helper;
+use Eighteen73\Dear\RESTApi;
+use GuzzleHttp\Utils;
 
 abstract class BaseApi implements RESTApi
 {
     /**
      * Default limit
      */
-    const LIMIT = 100;
+    public const LIMIT = 100;
     /**
      * Default page
      */
-    const PAGE = 1;
+    public const PAGE = 1;
 
     /**
      * HTTP request content type
      */
-    const CONTENT_TYPE = 'application/json';
+    public const CONTENT_TYPE = 'application/json';
 
     /**
      * @var Config
      */
-    protected $config;
+    protected Config $config;
 
-    /**
-     * BaseApi constructor.
-     * @param $config
-     */
     public function __construct(Config $config)
     {
         $this->config = $config;
@@ -62,30 +60,26 @@ abstract class BaseApi implements RESTApi
 
     /**
      * Provide endpoint's action name
-     * @return string
      */
-    abstract protected function getAction();
+    abstract protected function getAction(): string;
 
     /**
      * Represents the GUID column name
-     * @var string
      */
-    abstract protected function getGUID();
+    abstract protected function getGUID(): string;
 
     /**
      * GUID column name for delete action
-     * @return string
      */
-    protected function deleteGUID()
+    protected function deleteGUID(): string
     {
         return 'ID';
     }
 
     /**
      * Returns required headers
-     * @return array
      */
-    protected function getHeaders()
+    protected function getHeaders(): array
     {
         return [
             'Content-Type' => self::CONTENT_TYPE,
@@ -94,38 +88,30 @@ abstract class BaseApi implements RESTApi
         ];
     }
 
-    /**
-     * @return Client
-     */
-    protected function getClient()
+    protected function getClient(): Client
     {
-        $client = new Client([
+        return new Client([
             'base_uri' => $this->getBaseUrl()
         ]);
-
-        return $client;
     }
 
-    /**
-     * @return string
-     */
-    final protected function getBaseUrl()
+    final protected function getBaseUrl(): string
     {
         return 'https://inventory.dearsystems.com/ExternalApi/v2/';
     }
 
-    final public function get($parameters = [])
+    final public function get(array $parameters = []): array
     {
         return $this->execute('GET', Helper::prepareParameters($parameters));
     }
 
-    final public function find($guid, $parameters = [])
+    final public function find(string $guid, array $parameters = []): array
     {
         $parameters[$this->getGUID()] = $guid;
         return $this->execute('GET', Helper::prepareParameters($parameters));
     }
 
-    final public function create($parameters = [])
+    final public function create(array $parameters = []): array
     {
         if (!$this instanceof PostMethodAllowed) {
             throw new MethodNotAllowedException('Method not allowed.');
@@ -134,7 +120,7 @@ abstract class BaseApi implements RESTApi
         return $this->execute('POST', $parameters);
     }
 
-    final public function update($guid, $parameters = [])
+    final public function update(string $guid, array $parameters = []): array
     {
         if (!$this instanceof PutMethodAllowed) {
             throw new MethodNotAllowedException('Method not allowed.');
@@ -144,7 +130,7 @@ abstract class BaseApi implements RESTApi
         return $this->execute('PUT', $parameters);
     }
 
-    final public function delete($guid, $parameters = [])
+    final public function delete(string $guid, array $parameters = []): array
     {
         if (!$this instanceof DeleteMethodAllowed) {
             throw new MethodNotAllowedException('Method not allowed.');
@@ -155,12 +141,16 @@ abstract class BaseApi implements RESTApi
     }
 
     /**
-     * @param $httpMethod
-     * @param array $parameters
-     * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws BadRequestException
+     * @throws DearApiException
+     * @throws ForbiddenRequestException
+     * @throws InternalServerErrorException
+     * @throws MethodNotAllowedException
+     * @throws NotFoundException
+     * @throws ServiceUnavailableException
+     * @throws GuzzleException
      */
-    protected function execute($httpMethod, array $parameters)
+    protected function execute(string $httpMethod, array $parameters): array
     {
         try {
             $requestParams = [
@@ -174,7 +164,7 @@ abstract class BaseApi implements RESTApi
             }
 
             $response = $this->getClient()->request($httpMethod, $this->getAction(), $requestParams);
-            return \GuzzleHttp\json_decode((string)$response->getBody(), true);
+            return Utils::jsonDecode((string)$response->getBody(), true);
 
         } catch (ClientException $clientException) {
             return $this->handleClientException($clientException);
@@ -191,33 +181,16 @@ abstract class BaseApi implements RESTApi
         }
     }
 
-    /**
-     * @param ClientException $e
-     */
-    protected function handleClientException(ClientException $e)
+    protected function handleClientException(ClientException $e): void
     {
         $response = $e->getResponse();
-        switch ($response->getStatusCode()) {
-            case 400:
-                $exceptionClass = BadRequestException::class;
-                break;
-
-            case 403:
-                $exceptionClass = ForbiddenRequestException::class;
-                break;
-
-            case 404:
-                $exceptionClass = NotFoundException::class;
-                break;
-
-            case 405:
-                $exceptionClass = MethodNotAllowedException::class;
-                break;
-
-            default:
-                $exceptionClass = DearApiException::class;
-                break;
-        }
+        $exceptionClass = match ($response->getStatusCode()) {
+            400 => BadRequestException::class,
+            403 => ForbiddenRequestException::class,
+            404 => NotFoundException::class,
+            405 => MethodNotAllowedException::class,
+            default => DearApiException::class,
+        };
 
         $exceptionInstance = new $exceptionClass($e->getMessage());
         $exceptionInstance->setStatusCode($response->getStatusCode());
@@ -225,27 +198,14 @@ abstract class BaseApi implements RESTApi
         throw $exceptionInstance;
     }
 
-    /**
-     * @param ServerException $e
-     */
     protected function handleServerException(ServerException $e)
     {
         $response = $e->getResponse();
-        switch ($response->getStatusCode()) {
-
-
-            case 500:
-                $exceptionClass = InternalServerErrorException::class;
-                break;
-
-            case 503:
-                $exceptionClass = ServiceUnavailableException::class;
-                break;
-
-            default:
-                $exceptionClass = DearApiException::class;
-                break;
-        }
+        $exceptionClass = match ($response->getStatusCode()) {
+            500 => InternalServerErrorException::class,
+            503 => ServiceUnavailableException::class,
+            default => DearApiException::class,
+        };
 
         $exceptionInstance = new $exceptionClass($e->getMessage());
         $exceptionInstance->setStatusCode($response->getStatusCode());

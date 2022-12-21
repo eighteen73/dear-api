@@ -11,19 +11,19 @@
  *
  */
 
-namespace UmiMood\Dear\Api;
+namespace Eighteen73\Dear\Api;
 
-use UmiMood\Dear\Api\Contracts\PostMethodAllowed as PostContract;
-use UmiMood\Dear\Api\Contracts\PutMethodAllowed as PutContract;
+use Eighteen73\Dear\Api\Contracts\PostMethodAllowed as PostContract;
+use Eighteen73\Dear\Api\Contracts\PutMethodAllowed as PutContract;
 
 class Supplier extends BaseApi implements PostContract, PutContract
 {
-    protected function getGUID()
+    protected function getGUID(): string
     {
         return "ID";
     }
 
-    protected function getAction()
+    protected function getAction(): string
     {
         return 'supplier';
     }

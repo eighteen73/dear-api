@@ -1,31 +1,32 @@
 # dear-api
-[![Build Status](https://travis-ci.com/UmiMood/dear-api.svg?token=4CfuxCuzvs5i12ZugsAZ&branch=master)](https://travis-ci.com/UmiMood/dear-api)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/UmiMood/dear-api/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/UmiMood/dear-api/?branch=master)
-PHP Library for [dear systems](https://dearinventory.docs.apiary.io) API v2.
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/eighteen73/dear-api/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/UmiMood/dear-api/?branch=master)
+PHP Library for [DEAR Systems](https://dearinventory.docs.apiary.io) API v2.
+
+Originally forked from [UmiMood/dear-api](https://github.com/UmiMood/dear-api).
 
 ## Requirements
 
-* PHP 7.1+
-* guzzlehttp/guzzle 6.3+
+* PHP 8.0+
+* guzzlehttp/guzzle 7.4+
 * ext-json extension
 
 ## Installation
 
 ```bash
-composer require umimood/dearapi
+composer require eighteen73/dear-api
 ```
 
 Otherwise just download the package and add it to the autoloader.
 
 ## API Documentation
-[docs](https://dearinventory.docs.apiary.io)
+[DOCS](https://dearinventory.docs.apiary.io)
 
 ## Usage
 
 
 Create a Dear instance.
 ```php
-$dear = UmiMood\Dear\Dear::create("DEAR-ACCOUNT_ID", "DEAR-APPLICATION-KEY");
+$dear = Eighteen73\Dear\Dear::create("DEAR-ACCOUNT_ID", "DEAR-APPLICATION-KEY");
 ```
 
 Get data from API
@@ -59,4 +60,4 @@ $response = $dear->product()->delete($guid, []);
 ```
 
 ## Links ##
- * [License](./LICENSE)
+* [License](./LICENSE)

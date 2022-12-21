@@ -11,40 +11,17 @@
  *
  */
 
-namespace UmiMood\Dear;
+namespace Eighteen73\Dear;
 
 interface RESTApi
 {
-    /**
-     * @param array $parameters
-     * @return mixed
-     */
-    public function get($parameters = []);
+    public function get(array $parameters = []): mixed;
 
-    /**
-     * @param $guid
-     * @param array $parameters
-     * @return mixed
-     */
-    public function find($guid, $parameters = []);
+    public function find(string $guid, array $parameters = []): mixed;
 
-    /**
-     * @param array $parameters
-     * @return mixed
-     */
-    public function create($parameters = []);
+    public function create(array $parameters = []): mixed;
 
-    /**
-     * @param $guid
-     * @param array $parameters
-     * @return mixed
-     */
-    public function update($guid, $parameters = []);
+    public function update(string $guid, array $parameters = []): mixed;
 
-    /**
-     * @param $guid
-     * @param array $parameters
-     * @return mixed
-     */
-    public function delete($guid, $parameters = []);
+    public function delete(string $guid, array $parameters = []): mixed;
 }

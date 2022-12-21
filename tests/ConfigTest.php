@@ -11,10 +11,10 @@
  *
  */
 
-namespace UmiMood\Dear\Test;
+namespace Eighteen73\Dear\Test;
 
 use PHPUnit\Framework\TestCase;
-use UmiMood\Dear\Config;
+use Eighteen73\Dear\Config;
 
 class ConfigTest extends TestCase
 {
