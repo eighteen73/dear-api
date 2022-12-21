@@ -15,7 +15,7 @@ namespace Eighteen73\Dear;
 
 class Dear
 {
-    protected static self $instance;
+    protected static self|null $instance = null;
 
     protected Config $config;
 
