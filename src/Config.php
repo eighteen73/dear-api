@@ -46,7 +46,7 @@ class Config
         return $this->applicationKey;
     }
 
-    public function setApplicationKey($applicationKey): string
+    public function setApplicationKey($applicationKey): void
     {
         $this->applicationKey = $applicationKey;
     }
