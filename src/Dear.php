@@ -47,6 +47,7 @@ namespace Eighteen73\Dear;
  * @method \Eighteen73\Dear\Api\MoneyOperation moneyOperation()
  * @method \Eighteen73\Dear\Api\MoneyTaskList moneyTaskList()
  * @method \Eighteen73\Dear\Api\PaymentTerm paymentTerm()
+ * @method \Eighteen73\Dear\Api\PriceTiers priceTiers()
  * @method \Eighteen73\Dear\Api\Product product()
  * @method \Eighteen73\Dear\Api\ProductAttachment productAttachment()
  * @method \Eighteen73\Dear\Api\ProductAvailability productAvailability()
