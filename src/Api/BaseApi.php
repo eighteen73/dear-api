@@ -95,23 +95,23 @@ abstract class BaseApi implements RESTApi
         ]);
     }
 
-    final protected function getBaseUrl(): string
+    protected function getBaseUrl(): string
     {
         return 'https://inventory.dearsystems.com/ExternalApi/v2/';
     }
 
-    final public function get(array $parameters = []): array
+    public function get(array $parameters = []): array
     {
         return $this->execute('GET', Helper::prepareParameters($parameters));
     }
 
-    final public function find(string $guid, array $parameters = []): array
+    public function find(string $guid, array $parameters = []): array
     {
         $parameters[$this->getGUID()] = $guid;
         return $this->execute('GET', Helper::prepareParameters($parameters));
     }
 
-    final public function create(array $parameters = []): array
+    public function create(array $parameters = []): array
     {
         if (!$this instanceof PostMethodAllowed) {
             throw new MethodNotAllowedException('Method not allowed.');
@@ -120,7 +120,7 @@ abstract class BaseApi implements RESTApi
         return $this->execute('POST', $parameters);
     }
 
-    final public function update(string $guid, array $parameters = []): array
+    public function update(string $guid, array $parameters = []): array
     {
         if (!$this instanceof PutMethodAllowed) {
             throw new MethodNotAllowedException('Method not allowed.');
@@ -130,7 +130,7 @@ abstract class BaseApi implements RESTApi
         return $this->execute('PUT', $parameters);
     }
 
-    final public function delete(string $guid, array $parameters = []): array
+    public function delete(string $guid, array $parameters = []): array
     {
         if (!$this instanceof DeleteMethodAllowed) {
             throw new MethodNotAllowedException('Method not allowed.');

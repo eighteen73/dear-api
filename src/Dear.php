@@ -51,6 +51,7 @@ namespace Eighteen73\Dear;
  * @method \Eighteen73\Dear\Api\ProductAttachment productAttachment()
  * @method \Eighteen73\Dear\Api\ProductAvailability productAvailability()
  * @method \Eighteen73\Dear\Api\ProductCategory productCategory()
+ * @method \Eighteen73\Dear\Api\ProductMarkupPrices productMarkupPrices()
  * @method \Eighteen73\Dear\Api\ProductFamily productFamily()
  * @method \Eighteen73\Dear\Api\ProductFamilyAttachment productFamilyAttachment()
  * @method \Eighteen73\Dear\Api\Purchase purchase()
