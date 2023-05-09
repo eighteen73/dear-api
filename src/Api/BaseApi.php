@@ -194,6 +194,7 @@ abstract class BaseApi implements RESTApi
 
         $exceptionInstance = new $exceptionClass($e->getMessage());
         $exceptionInstance->setStatusCode($response->getStatusCode());
+        $exceptionInstance->setResponseBody($response->getBody()->getContents());
 
         throw $exceptionInstance;
     }

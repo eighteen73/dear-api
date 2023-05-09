@@ -17,13 +17,25 @@ class DearApiException extends \Exception
 {
     protected int $statusCode;
 
+    protected ?string $responseBody;
+
     public function getStatusCode(): int
     {
         return $this->statusCode;
     }
 
+    public function getResponseBody(): ?string
+    {
+        return $this->responseBody;
+    }
+
     public function setStatusCode(int $statusCode): void
     {
         $this->statusCode = $statusCode;
+    }
+
+    public function setResponseBody(string $responseBody): void
+    {
+        $this->responseBody = $responseBody;
     }
 }
